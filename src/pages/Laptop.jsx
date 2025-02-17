@@ -38,7 +38,7 @@ const Laptop = () => {
           Add Laptop
         </button>
 
-        <Table data={currentItems} deleteItem={deleteLaptop} />
+        <Table data={currentItems} deleteItem={deleteLaptop} startIndex={indexOfFirstItem + 1}/>
 
         <div className="flex justify-center items-center gap-2">
           <button

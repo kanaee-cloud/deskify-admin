@@ -42,7 +42,7 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-10">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+      <div className="bg-white text-black p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-lg font-bold mb-4">Add New Laptop</h2>
         <form onSubmit={handleSubmit} className="space-y-3">
           <input

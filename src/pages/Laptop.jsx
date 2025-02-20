@@ -1,16 +1,16 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-// import React from 'react'
-
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { IoIosAddCircle } from "react-icons/io";
 import AddLaptopModal from "../components/AddLaptopModal";
 import Table from "../components/LaptopTable";
 import useLaptop from "../hooks/useLaptop";
-import { useState } from "react";
 
 const Laptop = () => {
   const { laptops, deleteLaptop, createLaptop } = useLaptop();
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [currentPage, setCurrentPage] = useState(1);
+  const [direction, setDirection] = useState(0);
   const itemsPerPage = 10;
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -24,59 +24,99 @@ const Laptop = () => {
   }
 
   const handlePageChange = (pageNumber) => {
+    // Set the animation direction based on navigation direction
+    setDirection(pageNumber > currentPage ? 1 : -1);
     setCurrentPage(pageNumber);
   };
 
+  // Animation variants
+  const variants = {
+    enter: (direction) => ({
+      x: direction > 0 ? 500 : -500,
+      opacity: 0,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+    },
+    exit: (direction) => ({
+      x: direction > 0 ? -500 : 500,
+      opacity: 0,
+    }),
+  };
+
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Laptop List</h1>
-      <div className="space-y-4">
+    <div className="text-white space-y-4">
+      <div className="rounded flex justify-between items-center">
+        <h1 className="text-xl font-bold">Laptop List</h1>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          className="px-3 py-1 bg-[#383b40] text-white font-medium rounded transition-all duration-200 ease-in-out hover:bg-[#E3B951]/90 hover:text-black flex items-center gap-2"
         >
+          <IoIosAddCircle />
           Add Laptop
         </button>
+      </div>
 
-        <Table data={currentItems} deleteItem={deleteLaptop} startIndex={indexOfFirstItem + 1}/>
-
-        <div className="flex justify-center items-center gap-2">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50"
+      <div className="relative overflow-hidden">
+        <AnimatePresence initial={false} custom={direction} mode="wait">
+          <motion.div
+            key={currentPage}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 30,
+            }}
           >
-            Previous
-          </button>
+            <Table
+              data={currentItems}
+              deleteItem={deleteLaptop}
+              startIndex={indexOfFirstItem + 1}
+            />
+          </motion.div>
+        </AnimatePresence>
+      </div>
 
-          {pageNumbers.map((number) => (
-            <button
-              key={number}
-              onClick={() => handlePageChange(number)}
-              className={`px-3 py-1 rounded border ${
-                currentPage === number
-                  ? "bg-blue-500 text-white"
-                  : "border-gray-300 hover:bg-gray-100"
-              }`}
-            >
-              {number}
-            </button>
-          ))}
+      <div className="flex justify-center items-center gap-2 mt-10">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-3 py-1 rounded bg-[#383b40] disabled:opacity-50 hover:bg-[#E3B951] hover:text-black transition-colors duration-200 ease-linear"
+        >
+          Previous
+        </button>
 
+        {pageNumbers.map((number) => (
           <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50"
+            key={number}
+            onClick={() => handlePageChange(number)}
+            className={`px-3 py-1 rounded transition-all duration-200 ease-linear ${
+              currentPage === number
+                ? "bg-[#383b40] text-white"
+                : "hover:bg-[#383b40] bg-[#212529]"
+            }`}
           >
-            Next
+            {number}
           </button>
-        </div>
+        ))}
 
-        <div className="text-center text-sm text-gray-600">
-          Showing {indexOfFirstItem + 1} to{" "}
-          {Math.min(indexOfLastItem, laptops.length)} of {laptops.length}{" "}
-          entries
-        </div>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-3 py-1 rounded bg-[#383b40] disabled:opacity-50 hover:bg-[#E3B951] hover:text-black transition-colors duration-200 ease-linear"
+        >
+          Next
+        </button>
+      </div>
+
+      <div className="text-center text-sm text-gray-600">
+        Showing {indexOfFirstItem + 1} to{" "}
+        {Math.min(indexOfLastItem, laptops.length)} of {laptops.length} entries
       </div>
 
       <AddLaptopModal

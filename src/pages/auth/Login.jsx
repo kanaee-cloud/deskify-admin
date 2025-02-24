@@ -1,11 +1,25 @@
-import { useState} from "react";
+import { useContext, useState} from "react";
 import { MdMonitor } from "react-icons/md";
 import { motion } from "framer-motion";
+import { AuthContext } from "../../context/authContext";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  // State for input fields
-  const [username, setUsername] = useState("");
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      await login(email, password);
+      navigate("/laptop");
+    } catch (err) {
+      setError(err);
+    }
+  };
   
   return (
     <div className="h-screen w-full flex flex-col gap-10 justify-center items-center relative overflow-hidden bg-[#1a1d21]">
@@ -67,6 +81,7 @@ const Login = () => {
           <MdMonitor size={38} className="text-[#E3B951]" />
         </motion.div>
         <span>Deskify</span>
+        {error && <p style={{ color: "red" }}>{error}</p>}
       </motion.header>
       
       {/* Login form with entrance animation */}
@@ -81,7 +96,7 @@ const Login = () => {
           delay: 0.4
         }}
       >
-        <form className="space-y-6 text-white">
+        <form className="space-y-6 text-white" onSubmit={handleLogin}>
           <div className="space-y-2">
             <motion.h2 
               className="text-xl font-semibold text-center mb-6"
@@ -98,10 +113,10 @@ const Login = () => {
               transition={{ delay: 0.8 }}
             >
               <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                type="email"
+                placeholder="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full p-2 bg-[#383b40] border-2 border-[#E3B951]/70 rounded-md focus:border-[#E3B951] focus:outline-none transition-colors duration-200"
               />
             </motion.div>

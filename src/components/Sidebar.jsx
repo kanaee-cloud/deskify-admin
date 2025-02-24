@@ -4,10 +4,12 @@ import { HiOutlineChevronRight } from "react-icons/hi";
 import { FaLaptop } from "react-icons/fa";
 import { BiSolidPackage } from "react-icons/bi";
 import { IoLogOut } from "react-icons/io5";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../context/authContext";
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const { logout } = useContext(AuthContext);
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -59,6 +61,7 @@ const Sidebar = () => {
             icon={<IoLogOut size={22} />}
             text="Log Out"
             isCollapsed={isCollapsed}
+            onClick={logout}
           />
         </div>
       </div>
@@ -66,18 +69,27 @@ const Sidebar = () => {
   );
 };
 
-const NavItem = ({ to, icon, text, isCollapsed }) => {
-  return (
+const NavItem = ({ to, icon, text, isCollapsed, onClick }) => {
+  const className = `flex items-center p-2 font-medium border-b border-transparent ${
+    isCollapsed ? "justify-start" : "justify-start pl-3"
+  } hover:border-b-[#E3B951] hover:border-b-2 transition-all duration-200 ${
+    !onClick ? "text-white" : "text-red-500 hover:text-red-400"
+  }`;
+
+  return onClick ? (
+    <button onClick={onClick} className={className}>
+      <span className="transition-transform duration-200">{icon}</span>
+      {!isCollapsed && (
+        <span className="ml-3 transition-opacity duration-300 text-nowrap">
+          {text}
+        </span>
+      )}
+    </button>
+  ) : (
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `flex items-center p-2 font-medium border-b border-transparent ${
-          isCollapsed ? "justify-start" : "justify-start pl-3"
-        } ${
-          isActive
-            ? "bg-[#E3B951] rounded text-[#212529]"
-            : "hover:border-b-[#E3B951] hover:border-b-2 transition-all duration-200"
-        }`
+        `${className} ${isActive ? "bg-[#E3B951] rounded text-[#212529]" : ""}`
       }
     >
       <span className="transition-transform duration-200">{icon}</span>

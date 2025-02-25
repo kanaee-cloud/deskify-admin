@@ -11,6 +11,7 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
     gpu: "",
     screen_size: "",
     price: "",
+    image_url: "",
   });
 
   const handleChange = (e) => {
@@ -31,7 +32,8 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
         storage: "",
         gpu: "",
         screen_size: "",
-        price: "",
+        price: "",  
+        image_url: "",
       });
     } else {
       alert("Gagal menambahkan laptop.");
@@ -41,9 +43,11 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-10">
-      <div className="bg-white text-black p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-lg font-bold mb-4">Add New Laptop</h2>
+    <div className="fixed inset-0 flex items-center justify-center bg-black/80 bg-opacity-10">
+      <div className="bg-[#212529] text-white  p-6 rounded-lg shadow-lg w-96">
+        <h2 className="text-center font-bold text-xl tracking-wide mb-4">
+          Add New Laptop
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-3">
           <input
             type="text"
@@ -51,7 +55,7 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
             placeholder="Model Name"
             value={formData.model_name}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border-b outline-none border-[#E3B951]"
             required
           />
           <input
@@ -60,7 +64,7 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
             placeholder="Brand"
             value={formData.brand}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border-b outline-none border-[#E3B951]"
             required
           />
           <input
@@ -69,7 +73,7 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
             placeholder="Processor"
             value={formData.processor}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border-b outline-none border-[#E3B951]"
             required
           />
           <input
@@ -78,7 +82,7 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
             placeholder="RAM"
             value={formData.ram}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border-b outline-none border-[#E3B951]"
             required
           />
           <input
@@ -87,7 +91,7 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
             placeholder="Storage"
             value={formData.storage}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border-b outline-none border-[#E3B951]"
             required
           />
           <input
@@ -96,7 +100,7 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
             placeholder="GPU"
             value={formData.gpu}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border-b outline-none border-[#E3B951]"
           />
           <input
             type="text"
@@ -104,7 +108,7 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
             placeholder="Screen Size"
             value={formData.screen_size}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border-b outline-none border-[#E3B951]"
           />
           <input
             type="number"
@@ -112,20 +116,29 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
             placeholder="Price"
             value={formData.price}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border-b outline-none border-[#E3B951]"
             required
           />
-          <div className="flex justify-end gap-2">
+            <input
+              id="file-upload"
+              type="url"
+              name="image_url"
+              placeholder="Image URL"
+              onChange={handleChange}
+              className="w-full p-2 border-b border-[#E3B951] outline-none"
+              required
+            />
+          <div className="flex mt-5 justify-between gap-2 font-semibold">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+              className="px-4 py-2 w-1/2 bg-[#383b40] text-white rounded hover:bg-[#383b30] transition-colors linear duration-200"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              className="px-4 py-2 w-1/2 border border-[#E3B951] text-white rounded hover:text-black hover:bg-[#E3B951] transition-colors linear duration-200"
             >
               Save
             </button>

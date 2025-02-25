@@ -4,14 +4,15 @@ import { useState } from "react";
 const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
   const [formData, setFormData] = useState({
     model_name: "",
-    brand: "",
-    processor: "",
-    ram: "",
-    storage: "",
-    gpu: "",
-    screen_size: "",
-    price: "",
-    image_url: "",
+        brand: "",
+        processor: "",
+        ram: "",
+        memory: "",
+        gpu: "",
+        refresh_rate: "",
+        display: "",
+        price: "",  
+        image_url: "",
   });
 
   const handleChange = (e) => {
@@ -29,9 +30,10 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
         brand: "",
         processor: "",
         ram: "",
-        storage: "",
+        memory: "",
         gpu: "",
-        screen_size: "",
+        refresh_rate: "",
+        display: "",
         price: "",  
         image_url: "",
       });
@@ -78,6 +80,15 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
           />
           <input
             type="text"
+            name="refresh_rate"
+            placeholder="Refresh Rate"
+            value={formData.refresh_rate}
+            onChange={handleChange}
+            className="w-full p-2 border-b outline-none border-[#E3B951]"
+            required
+          />
+          <input
+            type="text"
             name="ram"
             placeholder="RAM"
             value={formData.ram}
@@ -87,9 +98,9 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
           />
           <input
             type="text"
-            name="storage"
-            placeholder="Storage"
-            value={formData.storage}
+            name="memory"
+            placeholder="Memory"
+            value={formData.memory}
             onChange={handleChange}
             className="w-full p-2 border-b outline-none border-[#E3B951]"
             required
@@ -104,9 +115,9 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
           />
           <input
             type="text"
-            name="screen_size"
-            placeholder="Screen Size"
-            value={formData.screen_size}
+            name="display"
+            placeholder="display"
+            value={formData.display}
             onChange={handleChange}
             className="w-full p-2 border-b outline-none border-[#E3B951]"
           />

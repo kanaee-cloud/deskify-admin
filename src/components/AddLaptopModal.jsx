@@ -1,30 +1,50 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useState, useEffect } from "react";
+// import { MdDelete, MdEdit } from "react-icons/md";
+// import { FormatMoney } from "../utilities/FormatMoney";
 
-const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
+const AddLaptopModal = ({
+  isOpen,
+  onClose,
+  addOrUpdateLaptop,
+  editingLaptop,
+}) => {
   const [formData, setFormData] = useState({
     model_name: "",
-        brand: "",
-        processor: "",
-        ram: "",
-        memory: "",
-        gpu: "",
-        refresh_rate: "",
-        display: "",
-        price: "",  
-        image_url: "",
+    brand: "",
+    processor: "",
+    ram: "",
+    memory: "",
+    gpu: "",
+    refresh_rate: "",
+    display: "",
+    price: "",
+    image_url: "",
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  // Add hidden ID field for updates only
+  const [hiddenId, setHiddenId] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const response = await addLaptop(formData);
-    if (response.success) {
-      alert("Laptop berhasil ditambahkan!");
-      onClose();
+  useEffect(() => {
+    if (editingLaptop) {
+      // For editing, store the ID separately
+      setHiddenId(editingLaptop.id || "");
+      
+      setFormData({
+        model_name: editingLaptop.model_name || "",
+        brand: editingLaptop.brand || "",
+        processor: editingLaptop.processor || "",
+        ram: editingLaptop.ram || "",
+        memory: editingLaptop.memory || "",
+        gpu: editingLaptop.gpu || "",
+        refresh_rate: editingLaptop.refresh_rate || "",
+        display: editingLaptop.display || "",
+        price: editingLaptop.price || "",
+        image_url: editingLaptop.image_url || "",
+      });
+    } else {
+      // For new laptop, reset form
+      setHiddenId("");
       setFormData({
         model_name: "",
         brand: "",
@@ -34,11 +54,38 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
         gpu: "",
         refresh_rate: "",
         display: "",
-        price: "",  
+        price: "",
         image_url: "",
       });
+    }
+  }, [editingLaptop]);
+  
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    let response;
+    
+    if (editingLaptop) {
+      // For updating, pass the ID and the form data
+      response = await addOrUpdateLaptop(hiddenId, formData);
     } else {
-      alert("Gagal menambahkan laptop.");
+      // For creating, just pass the form data (ID will be generated on server)
+      response = await addOrUpdateLaptop(formData);
+    }
+
+    if (response.success) {
+      alert(
+        editingLaptop
+          ? "Laptop berhasil diperbarui!"
+          : "Laptop berhasil ditambahkan!"
+      );
+      onClose();
+    } else {
+      alert("Gagal menyimpan laptop.");
     }
   };
 
@@ -46,99 +93,23 @@ const AddLaptopModal = ({ isOpen, onClose, addLaptop }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/80 bg-opacity-10">
-      <div className="bg-[#212529] text-white  p-6 rounded-lg shadow-lg w-96">
+      <div className="bg-[#212529] text-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-center font-bold text-xl tracking-wide mb-4">
-          Add New Laptop
+          {editingLaptop ? "Edit Laptop" : "Add New Laptop"}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-3">
-          <input
-            type="text"
-            name="model_name"
-            placeholder="Model Name"
-            value={formData.model_name}
-            onChange={handleChange}
-            className="w-full p-2 border-b outline-none border-[#E3B951]"
-            required
-          />
-          <input
-            type="text"
-            name="brand"
-            placeholder="Brand"
-            value={formData.brand}
-            onChange={handleChange}
-            className="w-full p-2 border-b outline-none border-[#E3B951]"
-            required
-          />
-          <input
-            type="text"
-            name="processor"
-            placeholder="Processor"
-            value={formData.processor}
-            onChange={handleChange}
-            className="w-full p-2 border-b outline-none border-[#E3B951]"
-            required
-          />
-          <input
-            type="text"
-            name="refresh_rate"
-            placeholder="Refresh Rate"
-            value={formData.refresh_rate}
-            onChange={handleChange}
-            className="w-full p-2 border-b outline-none border-[#E3B951]"
-            required
-          />
-          <input
-            type="text"
-            name="ram"
-            placeholder="RAM"
-            value={formData.ram}
-            onChange={handleChange}
-            className="w-full p-2 border-b outline-none border-[#E3B951]"
-            required
-          />
-          <input
-            type="text"
-            name="memory"
-            placeholder="Memory"
-            value={formData.memory}
-            onChange={handleChange}
-            className="w-full p-2 border-b outline-none border-[#E3B951]"
-            required
-          />
-          <input
-            type="text"
-            name="gpu"
-            placeholder="GPU"
-            value={formData.gpu}
-            onChange={handleChange}
-            className="w-full p-2 border-b outline-none border-[#E3B951]"
-          />
-          <input
-            type="text"
-            name="display"
-            placeholder="display"
-            value={formData.display}
-            onChange={handleChange}
-            className="w-full p-2 border-b outline-none border-[#E3B951]"
-          />
-          <input
-            type="number"
-            name="price"
-            placeholder="Price"
-            value={formData.price}
-            onChange={handleChange}
-            className="w-full p-2 border-b outline-none border-[#E3B951]"
-            required
-          />
+          {Object.keys(formData).map((key) => (
             <input
-              id="file-upload"
-              type="url"
-              name="image_url"
-              placeholder="Image URL"
+              key={key}
+              type={key === "price" ? "number" : "text"}
+              name={key}
+              placeholder={key.replace("_", " ").toUpperCase()}
+              value={formData[key]}
               onChange={handleChange}
-              className="w-full p-2 border-b border-[#E3B951] outline-none"
+              className="w-full p-2 border-b outline-none border-[#E3B951]"
               required
             />
+          ))}
           <div className="flex mt-5 justify-between gap-2 font-semibold">
             <button
               type="button"

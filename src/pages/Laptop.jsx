@@ -7,7 +7,7 @@ import Table from "../components/LaptopTable";
 import useLaptop from "../hooks/useLaptop";
 
 const Laptop = () => {
-  const { laptops, deleteLaptop, createLaptop } = useLaptop();
+  const { laptops, deleteLaptop, createLaptop, updateLaptop } = useLaptop();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [direction, setDirection] = useState(0);
@@ -22,6 +22,23 @@ const Laptop = () => {
   for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
   }
+
+  const [editingLaptop, setEditingLaptop] = useState(null);
+
+  const handleEdit = (laptop) => {
+    setEditingLaptop(laptop);
+    setIsModalOpen(true);
+  };
+
+  const handleAddOrUpdateLaptop = (idOrData, data) => {
+    if (data) {
+      // If data is provided, we're updating a laptop
+      return updateLaptop(idOrData, data);
+    } else {
+      // Otherwise, we're creating a new laptop
+      return createLaptop(idOrData);
+    }
+  };
 
   const handlePageChange = (pageNumber) => {
     // Set the animation direction based on navigation direction
@@ -50,7 +67,10 @@ const Laptop = () => {
       <div className="rounded flex justify-between items-center">
         <h1 className="text-xl font-bold">Laptop List</h1>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setEditingLaptop(null); // Ensure we're not in edit mode when adding
+            setIsModalOpen(true);
+          }}
           className="px-3 py-1 bg-[#383b40] text-white font-medium rounded transition-all duration-200 ease-in-out hover:bg-[#E3B951]/90 hover:text-black flex items-center gap-2"
         >
           <IoIosAddCircle />
@@ -77,6 +97,7 @@ const Laptop = () => {
               data={currentItems}
               deleteItem={deleteLaptop}
               startIndex={indexOfFirstItem + 1}
+              editItem={handleEdit}
             />
           </motion.div>
         </AnimatePresence>
@@ -121,8 +142,12 @@ const Laptop = () => {
 
       <AddLaptopModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        addLaptop={createLaptop}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingLaptop(null); 
+        }}
+        addOrUpdateLaptop={handleAddOrUpdateLaptop}
+        editingLaptop={editingLaptop} 
       />
     </div>
   );

@@ -3,7 +3,7 @@ import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";  
 import { FormatMoney } from "../utilities/FormatMoney";
 
-const Table = ({ data, deleteItem, startIndex }) => {
+const Table = ({ data, deleteItem, editItem, startIndex }) => {
   return (
     <div className="overflow-x-auto text-white border-[0.5px] border-[#E3B951] rounded">
       <table className="min-w-full bg-[#212529]">
@@ -44,12 +44,11 @@ const Table = ({ data, deleteItem, startIndex }) => {
                 </button>
                 <button 
                   className="bg-[#383b40] text-white px-3 py-1.5 rounded flex items-center gap-1 border-b-2 border-transparent hover:bg-[#E3B951] hover:text-black transition-all duration-200"
-                  onClick={() => deleteItem(item.id)}
+                  onClick={() => editItem(item)}
                 >
                   <MdEdit size={18} />
                   <span>Edit</span>
                 </button>
-
               </td>
             </tr>
           ))}

@@ -1,22 +1,37 @@
-/* eslint-disable react/prop-types */
-import { Navigate, useLocation } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import { Navigate, Outlet } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
+import { getAdminDashboard } from "../services/authService";
 
-const ProtectedRoute = ({ children }) => {
-  const { user, isLoading } = useContext(AuthContext);
-  const location = useLocation();
+const ProtectedRoute = () => {
+  const { user, logout } = useContext(AuthContext);
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
-  if (isLoading) {
-    return null; 
+  useEffect(() => {
+    const validateToken = async () => {
+      if (!user) {
+        setIsAuthenticated(false);
+        return;
+      }
+
+      try {
+        await getAdminDashboard(user.token);
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error("Invalid token, redirecting to login...", error);
+        logout();
+        setIsAuthenticated(false);
+      }
+    };
+
+    validateToken();
+  }, [user, logout]);
+
+  if (isAuthenticated === null) {
+    return <p>Loading...</p>; 
   }
 
-  if (!user) {
-   
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  return children;
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default ProtectedRoute;

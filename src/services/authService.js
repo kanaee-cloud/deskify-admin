@@ -12,7 +12,7 @@ export const login = async (email, password) => {
     }
   };
 
-export const verifyToken = async (token) => {
+export const getAdminDashboard = async (token) => {
   try{
     const response = await api.get('/admin/dashboard', {
       headers: {

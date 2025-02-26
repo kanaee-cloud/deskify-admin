@@ -41,13 +41,13 @@ const Sidebar = () => {
       <div className="flex-1 flex flex-col justify-between">
         <div className="flex flex-col gap-3 mt-2">
           <NavItem
-            to="/packages"
+            to="/admin/packages"
             icon={<BiSolidPackage size={22} />}
             text="Packages"
             isCollapsed={isCollapsed}
           />
           <NavItem
-            to="/laptop"
+            to="/admin/laptop"
             icon={<FaLaptop size={22} />}
             text="Laptop"
             isCollapsed={isCollapsed}

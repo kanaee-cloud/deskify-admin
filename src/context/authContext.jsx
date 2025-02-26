@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useState, useEffect } from "react";
-import { login as apiLogin, logout as apiLogout, verifyToken } from "../services/authService";
+import { login as apiLogin, logout as apiLogout, getAdminDashboard } from "../services/authService";
 
 export const AuthContext = createContext();
 
@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem("token");
       if (token) {
         try{
-          const response = await verifyToken(token);
+          const response = await getAdminDashboard(token);
           setUser({ token, ...response.user});
         } catch(error){
           console.error("Token validation failed:", error);
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await apiLogin(email, password);
       localStorage.setItem("token", data.token);
-      const response = await verifyToken(data.token);
+      const response = await getAdminDashboard(data.token);
       setUser({ token: data.token, ...response.user });
     } catch (error) {
       console.error('Login error:', error);

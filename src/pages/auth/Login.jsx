@@ -15,7 +15,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(email, password);
-      navigate("/laptop");
+      navigate("/admin/laptop");
     } catch (err) {
       setError(err);
     }

@@ -31,15 +31,16 @@ const useLaptops = () => {
 
   const deleteLaptop = async (id) => {
     try {
-      const response = await api.delete(`/laptops/${id}`);
-      console.log("Delete Response:", response); 
-      setLaptops((prev) => prev.filter((l) => l.id !== id));
-      alert('Data berhasil dihapus');
+        const formattedId = String(id).padStart(3, '0'); 
+        const response = await api.delete(`/laptops/${formattedId}`);
+        console.log("Delete Response:", response); 
+        setLaptops((prev) => prev.filter((l) => l.id !== formattedId)); 
+        alert('Data berhasil dihapus');
     } catch (err) {
-      console.error("Failed to delete laptop:", err.response?.data || err.message);
-      setError("Failed to delete laptop");
+        console.error("Failed to delete laptop:", err.response?.data || err.message);
+        setError("Failed to delete laptop");
     }
-  };
+};
 
   const createLaptop = async (laptopData) => {
     try {
@@ -52,19 +53,14 @@ const useLaptops = () => {
   };
 
   const updateLaptop = async (id, laptopData) => {
-    console.log("ID yang diterima updateLaptop:", id, "Type:", typeof id);
-    console.log("Data yang dikirim:", laptopData);
-
     try {
-        if (!id || typeof id !== "string") {
-            console.error("Invalid ID format:", id);
-            return { success: false, error: "Invalid ID format" };
-        }
+        const formattedId = String(id).padStart(3, '0'); 
+        console.log("ID yang dikirim updateLaptop:", formattedId);
 
-        const response = await api.put(`/laptops/${id}`, laptopData);
+        const response = await api.put(`/laptops/${formattedId}`, laptopData);
         
         setLaptops((prev) => 
-            prev.map((laptop) => (laptop.id === id ? response.data.laptop : laptop))
+            prev.map((laptop) => (laptop.id === formattedId ? response.data.laptop : laptop))
         );
 
         return { success: true };

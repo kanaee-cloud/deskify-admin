@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useState, useEffect } from "react";
-import { login as apiLogin, logout as apiLogout } from "../services/authService";
+import { login as apiLogin, logout as apiLogout, verifyToken } from "../services/authService";
 
 export const AuthContext = createContext();
 
@@ -11,11 +11,17 @@ export const AuthProvider = ({ children }) => {
 
   // Initialize auth state
   useEffect(() => {
-    const initializeAuth = () => {
+    const initializeAuth = async () => {
       const token = localStorage.getItem("token");
       if (token) {
-        // Verify token is valid here if you have an endpoint for that
-        setUser({ token });
+        try{
+          const response = await verifyToken(token);
+          setUser({ token, ...response.user});
+        } catch(error){
+          console.error("Token validation failed:", error);
+          localStorage.removeItem("token");
+          setUser(null);
+        }
       }
       setIsLoading(false);
     };
@@ -27,7 +33,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await apiLogin(email, password);
       localStorage.setItem("token", data.token);
-      setUser({ token: data.token });
+      const response = await verifyToken(data.token);
+      setUser({ token: data.token, ...response.user });
     } catch (error) {
       console.error('Login error:', error);
       throw error;

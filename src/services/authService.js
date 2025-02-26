@@ -11,6 +11,19 @@ export const login = async (email, password) => {
       throw error.response?.data?.error || "Login failed";
     }
   };
+
+export const verifyToken = async (token) => {
+  try{
+    const response = await api.get('/admin/dashboard', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    return response.data;
+  } catch(error){
+    throw new Error("Invalid or expire token", error);
+  }
+};
   
   
 
